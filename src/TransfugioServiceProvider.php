@@ -12,12 +12,12 @@ class TransfugioServiceProvider extends ServiceProvider
   public function register()
   {
     $this->publishes([
-      __DIR__.'/config/transfugio.php' => config_path('transfugio.php')
+      __DIR__.'../config/transfugio.php' => config_path('transfugio.php')
     ]);
   }
 
   public function boot()
   {
-    $this->loadViewsFrom(__DIR__.'/resources/views', 'transfugio');
+    $this->loadViewsFrom(__DIR__.'../resources/views', 'transfugio');
   }
 }
