@@ -1,0 +1,29 @@
+{
+  "name": "efrane/transfugio",
+  "description": "Fractal based APIs in Laravel.",
+
+  "autoload": {
+    "psr-4": {
+      "EFrane\\Transfugio\\": "src/"
+    }
+  },
+
+  "minimum-stability": "stable",
+
+  "authors": [
+    {
+      "name": "Stefan Graupner",
+      "email": "efrane@meanderingsoul.com",
+      "website": "http://meanderingsoul.com"
+    }
+  ],
+
+  "require": {
+    "php": ">=5.5",
+
+    "symfony/yaml": "~/2.6",
+    "league/fractal": "*"
+  },
+
+  "license": "BSD 2 Clause"
+}
