@@ -19,7 +19,8 @@
     "illuminate/support": "~5.0",
     "illuminate/pagination": "~5.0",
     "symfony/yaml": "~2.6",
-    "league/fractal": "*"
+    "league/fractal": "*",
+    "phpdocumentor/reflection-docblock": "^2.0"
   },
   "license": "BSD 2 Clause"
 }
