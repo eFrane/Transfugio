@@ -2,6 +2,13 @@
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Laravel Service Provider
+ *
+ * Integrates Transfugio with Laravel.
+ *
+ * @package EFrane\Transfugio
+ **/
 class TransfugioServiceProvider extends ServiceProvider
 {
   /**
@@ -16,8 +23,15 @@ class TransfugioServiceProvider extends ServiceProvider
     ]);
   }
 
+  /**
+   * Include the helper methods and set the view directory.
+   *
+   * @return void
+   */
   public function boot()
   {
+    require __DIR__.'/helpers.php';
+
     $this->loadViewsFrom(__DIR__.'../resources/views', 'transfugio');
   }
 }
