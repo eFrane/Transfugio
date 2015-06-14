@@ -27,7 +27,7 @@ abstract class BaseTransformer extends TransformerAbstract
 
     return array_map(function ($key) use ($routeName) {
       return route($routeName, $key);
-    }, $keys);
+    }, $keys->all());
   }
 
   public function __call($formatHelperMethod, array $value)
