@@ -1,17 +1,42 @@
 <?php namespace EFrane\Transfugio\Transformers\Formatter;
 
+/**
+ * HTTP URI Formatter
+ *
+ * Validates and formats URLs.
+ *
+ * @package EFrane\Transfugio\Transformers\Formatter
+ **/
 class HttpURI implements FormatHelper
 {
+  /**
+   * Format an URL to be fully-qualified
+   *
+   * @param $value
+   * @return string
+   **/
   public function format($value)
   {
-    $uri = parse_url($value);
+    if (!$this->validate($value))
+      throw new \InvalidArgumentException("`{$value}` is not a valid HTTP URI");
 
-    return sprintf(
-      '%s:/%s/%s?%s',
-      $uri['scheme'],
-      strtolower($uri['host']).(!isset($uri['port'])) ?: $uri['port'],
-      $uri['path'],
-      $uri['query']
-    );
+    $parsed = parse_url($value);
+    if (!isset($parsed['scheme']))
+      $value = 'http://'.$value;
+
+    return strtolower($value);
+  }
+
+  /**
+   * Validate an expression to a valid http url
+   *
+   * @param $value
+   * @return bool
+   * @see
+   */
+  public function validate($value)
+  {
+    $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i';
+    return preg_match($regex, $value) === 1;
   }
 }
