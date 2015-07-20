@@ -10,14 +10,14 @@ class Transformers_Formatter_DateISO8601Test extends \Codeception\TestCase\Test
    */
   protected $tester;
 
+  public function testInstantiate()
+  {
+    $this->assertInstanceOf('EFrane\Transfugio\Transformers\Formatter\DateISO8601', new DateISO8601());
+  }
+
   public function testIsFormatHelper()
   {
     $this->assertInstanceOf('EFrane\Transfugio\Transformers\Formatter\FormatHelper', new DateISO8601());
-  }
-
-  public function testInstantiate()
-  {
-    $this->assertInstanceOf('EFrane\Transfugio\Transformers\Formatter\DateISO8601', $instance);
   }
 
   public function testFormat()
