@@ -21,7 +21,8 @@
     "illuminate/pagination": "~5.0",
     "symfony/yaml": "~2.6",
     "league/fractal": "*",
-    "phpdocumentor/reflection-docblock": "^2.0"
+    "phpdocumentor/reflection-docblock": "^2.0",
+    "illuminate/http": "^5.1"
   },
   "license": "BSD 2 Clause",
   "require-dev": {
