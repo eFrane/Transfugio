@@ -12,7 +12,7 @@ class HttpURI implements FormatHelper
   /**
    * Format an URL to be fully-qualified
    *
-   * @param $value
+   * @param string $value
    * @return string
    **/
   public function format($value)
@@ -30,9 +30,8 @@ class HttpURI implements FormatHelper
   /**
    * Validate an expression to a valid http url
    *
-   * @param $value
+   * @param string $value
    * @return bool
-   * @see
    */
   public function validate($value)
   {
