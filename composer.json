@@ -22,7 +22,8 @@
     "symfony/yaml": "~2.6",
     "league/fractal": "*",
     "phpdocumentor/reflection-docblock": "^2.0",
-    "illuminate/http": "^5.1"
+    "illuminate/http": "^5.1",
+    "league/url": "^3.3"
   },
   "license": "BSD 2 Clause",
   "require-dev": {

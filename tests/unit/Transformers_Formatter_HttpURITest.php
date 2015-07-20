@@ -34,7 +34,7 @@ class Transformers_Formatter_HttpURITest extends \Codeception\TestCase\Test
   public function testFormat()
   {
     $url = new HttpURI();
-    $this->assertEquals('http://oparl.org', $url->format('oparl.org'));
+    $this->assertEquals('http://oparl.org/', $url->format('oparl.org'));
   }
 
   /**

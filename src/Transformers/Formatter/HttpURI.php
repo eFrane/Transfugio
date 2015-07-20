@@ -1,5 +1,7 @@
 <?php namespace EFrane\Transfugio\Transformers\Formatter;
 
+use League\Url\Url;
+
 /**
  * HTTP URI Formatter
  *
@@ -20,11 +22,12 @@ class HttpURI implements FormatHelper
     if (!$this->validate($value))
       throw new \InvalidArgumentException("`{$value}` is not a valid HTTP URI");
 
-    $parsed = parse_url($value);
-    if (!isset($parsed['scheme']))
-      $value = 'http://'.$value;
+    $url = Url::createFromUrl($value);
 
-    return strtolower($value);
+    if (!$url->getScheme('https'))
+      $url->setScheme('http');
+
+    return (String)$url;
   }
 
   /**
