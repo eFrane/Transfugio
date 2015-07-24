@@ -1,6 +1,7 @@
 <?php namespace EFrane\Transfugio\Transformers;
 
 use League\Fractal\Serializer\DataArraySerializer;
+use League\Url\Url;
 
 class SanitizedDataArraySerializer extends DataArraySerializer
 {
@@ -29,12 +30,12 @@ class SanitizedDataArraySerializer extends DataArraySerializer
       $pattern = sprintf('/%s.+/', preg_quote(url($apiRootURL), '/'));
       $format = config('transfugio.http.format');
 
-      if (is_string($value)
-        &&  preg_match($pattern, $value)
-        &&  $format !== 'json_accept')
+      if (is_string($value) &&  preg_match($pattern, $value) &&  $format !== 'json_accept')
       {
-        $value .= (strpos($value, '?') > 0) ? '&' : '?';
-        $value .= 'format='.config('transfugio.http.format');
+        $url = Url::createFromUrl($value);
+        $url->getQuery()->modify(['format' => $format]);
+
+        $value = (string)$url;
       }
 
       return $value;
