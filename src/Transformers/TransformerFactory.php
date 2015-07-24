@@ -44,6 +44,7 @@ class TransformerFactory
 
   static public function makeForModel(Model $model)
   {
+    /* @var TransformerFactory $instance */
     $instance = static::get();
 
     $className = $instance->determineTransformerClass($model);
