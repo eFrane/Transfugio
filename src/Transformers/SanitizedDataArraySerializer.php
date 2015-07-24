@@ -25,12 +25,12 @@ class SanitizedDataArraySerializer extends DataArraySerializer
       if (is_array($value))
         return $this->applyFormatParameterToUrls($value);
 
-      $apiRootURL = config('transfugio.rootURL');
-
-      $pattern = sprintf('/%s.+/', preg_quote(url($apiRootURL), '/'));
+      $pattern = sprintf('/%s.+/', preg_quote(url(config('transfugio.rootURL')), '/'));
       $format = config('transfugio.http.format');
 
-      if (is_string($value) &&  preg_match($pattern, $value) &&  $format !== 'json_accept')
+      if (is_string($value)           // urls are string values
+      && preg_match($pattern, $value) // that match the api's base url
+      && $format !== 'json_accept')   // the format parameter is not applied for json_accept
       {
         $url = Url::createFromUrl($value);
         $url->getQuery()->modify(['format' => $format]);
