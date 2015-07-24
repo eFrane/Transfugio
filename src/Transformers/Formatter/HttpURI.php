@@ -24,7 +24,7 @@ class HttpURI implements FormatHelper
 
     $url = Url::createFromUrl($value);
 
-    if (!$url->getScheme('https'))
+    if ($url->getScheme()->get() == '')
       $url->setScheme('http');
 
     return (String)$url;
