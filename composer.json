@@ -25,6 +25,9 @@
     "illuminate/http": "^5.1",
     "league/url": "^3.3"
   },
+  "suggest": {
+    "phpdocumentor/reflection-docblock": "Install to use PHPDoc documentation."
+  },
   "license": "BSD 2 Clause",
   "require-dev": {
     "codeception/codeception": "^2.1"
