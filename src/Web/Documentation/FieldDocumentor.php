@@ -19,6 +19,8 @@ abstract class FieldDocumentor
   abstract public function getCardinality();
   abstract public function getDescription();
 
+  abstract public function getFormat();
+
   /**
    * A Field status indicator (required, optional, deprecated, none)
    *

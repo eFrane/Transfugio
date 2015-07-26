@@ -35,9 +35,11 @@ class JSONSchemaLoader implements Loader
         $cardinality = FieldDocumentor::CARDINALITY_UNBOUNDED;
       }
 
-      // TODO: other field data (format, specific references, ...)
+      // TODO: other field data (specific references, ...)
 
       $field = new DefaultFieldDocumentor($fieldName, $description, $cardinality, $status);
+
+      if (isset($options['format'])) $field->setFormat($options['format']);
 
       $documentor->addField($field);
     }

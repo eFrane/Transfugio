@@ -10,6 +10,8 @@ class DefaultFieldDocumentor extends FieldDocumentor
 
   protected $status = FieldDocumentor::STATUS_NONE;
 
+  protected $format = '';
+
   /**
    * DefaultFieldDocumentor constructor.
    *
@@ -94,4 +96,19 @@ class DefaultFieldDocumentor extends FieldDocumentor
     return $this;
   }
 
+  /**
+   * @return string
+   */
+  public function getFormat()
+  {
+    return $this->format;
+  }
+
+  /**
+   * @param string $format
+   */
+  public function setFormat($format)
+  {
+    $this->format = $format;
+  }
 }
