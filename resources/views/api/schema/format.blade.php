@@ -1,12 +1,6 @@
-@if (isset($property['format']) || isset($property['items']['format']))
+@if ($field->hasFormat())
     <div>
         Format:
-        <samp>
-            @if (isset($property['format']))
-                {{ $property['format'] }}
-            @elseif (isset($property['items']['format']))
-                {{ $property['items']['format'] }}
-            @endif
-        </samp>
+        <samp>{{ $field->getFormat() }}</samp>
     </div>
 @endif

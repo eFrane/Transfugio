@@ -39,7 +39,13 @@ class JSONSchemaLoader implements Loader
 
       $field = new DefaultFieldDocumentor($fieldName, $description, $cardinality, $status);
 
-      if (isset($options['format'])) $field->setFormat($options['format']);
+      if (isset($options['format']))
+      {
+        $field->setFormat($options['format']);
+      } else if ($field->getCardinality() == FieldDocumentor::CARDINALITY_UNBOUNDED)
+      {
+        $field->setFormat($options['items']['format']);
+      }
 
       $documentor->addField($field);
     }

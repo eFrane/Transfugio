@@ -19,7 +19,24 @@ abstract class FieldDocumentor
   abstract public function getCardinality();
   abstract public function getDescription();
 
+  public function hasDescription()
+  {
+    return strlen($this->getDescription()) > 0;
+  }
+
   abstract public function getFormat();
+
+  public function hasFormat()
+  {
+    return strlen($this->getFormat()) > 0;
+  }
+
+  abstract public function getType();
+
+  public function hasType()
+  {
+    return strlen($this->getType()) > 0;
+  }
 
   /**
    * A Field status indicator (required, optional, deprecated, none)

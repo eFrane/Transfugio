@@ -12,6 +12,8 @@ class DefaultFieldDocumentor extends FieldDocumentor
 
   protected $format = '';
 
+  protected $type = '';
+
   /**
    * DefaultFieldDocumentor constructor.
    *
@@ -110,5 +112,21 @@ class DefaultFieldDocumentor extends FieldDocumentor
   public function setFormat($format)
   {
     $this->format = $format;
+  }
+
+  /**
+   * @return string
+   */
+  public function getType()
+  {
+    return $this->type;
+  }
+
+  /**
+   * @param string $type
+   */
+  public function setType($type)
+  {
+    $this->type = $type;
   }
 }

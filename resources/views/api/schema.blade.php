@@ -1,18 +1,25 @@
 <h4>Kurzbeschreibung</h4>
+
 <p>
-    TODO: Beschreibung
+    {{ $documentation->getDescription() }}
 </p>
 
 <h4>Eigenschaften</h4>
 <dl class="properties">
-@foreach ($schema['properties'] as $name => $property)
+@foreach ($documentation->getFields() as $field)
     <dt>
-        @if (in_array($name, $schema['required']))
-            <span class="text-danger" aria-label="Zwingende Eigenschaft">{{ $name }}</span>
+        @if ($field->isRequired())
+            <span class="text-danger" aria-label="Zwingende Eigenschaft">{{ $field->getName() }}</span>
+
+        {{--
+        TODO: do this with a custom field documentor on the OParl project
+
         @elseif(isset($schema['oparl:recommended']) && in_array($name, $schema['oparl:recommended']))
             <span class="text-success" aria-label="Empfohlene Eigenschaft">{{ $name }}</span>
+        --}}
+
         @else
-            {{ $name }}
+            {{ $field->getName() }}
         @endif
     </dt>
     <dd>
@@ -23,9 +30,9 @@
                 </div>
                 @include('transfugio::api.schema.format')
 
-                @if (isset($property['description']))
+                @if ($property->hasDescription())
                     <p class="text-muted small">
-                        {{ $property['description'] }}
+                        {{ $property->getDescription() }}
                     </p>
                 @endif
             </div>

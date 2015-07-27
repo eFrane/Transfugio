@@ -67,23 +67,34 @@ class DefaultDocumentor implements Documentor
     return $this;
   }
 
+  public function getFields()
+  {
+    return $this->fields;
+  }
+
   public function getRequiredFields()
   {
-    // TODO: Implement getRequiredFields() method.
+    return $this->fields->filter(function (FieldDocumentor $field) {
+      return $field->isRequired();
+    });
   }
 
   public function getOptionalFields()
   {
-    // TODO: Implement getOptionalFields() method.
+    return $this->fields->filter(function (FieldDocumentor $field) {
+      return $field->isOptional();
+    });
   }
 
   public function getDeprecatedFields()
   {
-    // TODO: Implement getDeprecatedFields() method.
+    return $this->fields->filter(function (FieldDocumentor $field) {
+      return $field->isDeprecated();
+    });
   }
 
   public function getFieldByName($fieldName)
   {
-    // TODO: Implement getFieldByName() method.
+    return $this->fields->get($fieldName);
   }
 }

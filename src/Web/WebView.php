@@ -46,7 +46,7 @@ class WebView extends Response
   public function render()
   {
     $data = [
-      'schema'          => $this->loadDocumentation(),
+      'documentation'   => $this->loadDocumentation(),
       'url'             => app('request')->url(),
       'json'            => $this->json,
       'module'          => $this->modelName,
@@ -60,13 +60,8 @@ class WebView extends Response
 
   protected function loadDocumentation()
   {
-    $type = config('transfugio.web.documentationType');
+    $loader = Documentation\LoaderFactory::getForType(config('transfugio.web.documentationType'));
 
-    if ($type === 'JSONSchema')
-    {
-    } else
-    {
-      throw new \LogicException("Unknown documentation type {$type}");
-    }
+    return $loader->loadForModel($this->modelName);
   }
 }
