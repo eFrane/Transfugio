@@ -1,5 +1,6 @@
 <?php namespace EFrane\Transfugio\Transformers\Formatter;
 
+use League\Uri\Schemes\Http;
 use League\Url\Url;
 
 /**
@@ -11,34 +12,36 @@ use League\Url\Url;
  **/
 class HttpURI implements FormatHelper
 {
-  /**
-   * Format an URL to be fully-qualified
-   *
-   * @param string $value
-   * @return string
-   **/
-  public function format($value)
-  {
-    if (!$this->validate($value))
-      throw new \InvalidArgumentException("`{$value}` is not a valid HTTP URI");
+    /**
+     * Format an URL to be fully-qualified
+     *
+     * @param string $value
+     * @return string
+     **/
+    public function format($value)
+    {
+        if (!$this->validate($value))
+            throw new \InvalidArgumentException("`{$value}` is not a valid HTTP URI");
 
-    $url = Url::createFromUrl($value);
+        $url = Http::createFromString($value);
 
-    if ($url->getScheme()->get() == '')
-      $url->setScheme('http');
+        if ($url->getScheme() == '') {
+            $url = $url->withScheme('http');
+        }
 
-    return (String)$url;
-  }
+        return (String)$url;
+    }
 
-  /**
-   * Validate an expression to a valid http url
-   *
-   * @param string $value
-   * @return bool
-   */
-  public function validate($value)
-  {
-    $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i';
-    return preg_match($regex, $value) === 1;
-  }
+    /**
+     * Validate an expression to a valid http url
+     *
+     * @param string $value
+     * @return bool
+     */
+    public function validate($value)
+    {
+        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i';
+
+        return preg_match($regex, $value) === 1;
+    }
 }

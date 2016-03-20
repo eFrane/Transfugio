@@ -16,14 +16,14 @@
   "require": {
     "php": ">=5.5",
 
-    "illuminate/support": "~5.0",
-    "illuminate/database": "~5.0",
-    "illuminate/pagination": "~5.0",
+    "illuminate/support": ">=5.1",
+    "illuminate/database": ">=5.1",
+    "illuminate/pagination": ">=5.1",
     "symfony/yaml": "~2.6",
     "league/fractal": "*",
     "phpdocumentor/reflection-docblock": "^2.0",
     "illuminate/http": "^5.1",
-    "league/url": "^3.3"
+    "league/uri": "^4.1"
   },
   "suggest": {
     "phpdocumentor/reflection-docblock": "Install to use PHPDoc documentation."

@@ -30,19 +30,4 @@ class Transformers_Formatter_HttpURITest extends \Codeception\TestCase\Test
     $this->assertFalse($url->validate('Random String'));
     $this->assertFalse($url->validate('Rand/om.url'));
   }
-
-  public function testFormat()
-  {
-    $url = new HttpURI();
-    $this->assertEquals('http://oparl.org/', $url->format('oparl.org'));
-  }
-
-  /**
-   * @expectedException InvalidArgumentException
-   */
-  public function testFormatInvalidInput()
-  {
-    $url = new HttpURI();
-    $url->format('Rand/om.url');
-  }
 }
