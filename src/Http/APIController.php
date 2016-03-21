@@ -9,81 +9,83 @@ use Illuminate\Routing\Controller;
  */
 class APIController extends Controller
 {
-  /**
-   * @var \Illuminate\Http\Request
-   */
-  protected $request = null;
+    /**
+     * @var \Illuminate\Http\Request
+     */
+    protected $request = null;
 
-  /**
-   * @var \Illuminate\Database\Eloquent\Model
-   **/
-  protected $model = null;
+    /**
+     * @var \Illuminate\Database\Eloquent\Model
+     **/
+    protected $model = null;
 
-  /**
-   * @var string output format
-   **/
-  protected $format = '';
+    /**
+     * @var string output format
+     **/
+    protected $format = '';
 
-  /**
-   * @var array
-   **/
-  protected $only = [];
+    /**
+     * @var array
+     **/
+    protected $only = [];
 
-  /**
-   * @param Request $request
-   */
-  public function __construct(Request $request)
-  {
-    // check for valid implementing class
-    if (!is_string($this->model))
+    /**
+     * @param Request $request
+     */
+    public function __construct(Request $request)
     {
-      throw new \LogicException("API controllers must have a valid \$model property.");
+        // check for valid implementing class
+        if (!is_string($this->model)) {
+            $controllerName = get_called_class();
+            $baseName = substr($controllerName, 0, strpos($controllerName, 'Controller'));
+
+            if (strlen($baseName) > 0) {
+                $this->model = sprintf('%s%s', config('transfugio.modelNamespace'), $baseName);
+            } else {
+                throw new \LogicException("API controllers must have a valid \$model property.");
+            }
+        }
+
+        if (((property_exists($this, 'item_id') && $this->item_id !== 0)
+                || !property_exists($this, 'item_id')) && !class_exists($this->model)
+        ) {
+            throw new \LogicException("The requested model {$this->model} is invalid.");
+        }
+
+        $this->request = $request;
+
+        // check for only parameter to limit output
+        if ($request->input('only')) {
+            $only = explode(',', $request->input('only'));
+
+            $validator = app('validator')->make(
+                ['only' => $only],
+                ['only' => 'array|in:data,meta']
+            );
+
+            if ($validator->failed()) {
+                $this->respondWithError("Invalid value for `only`.");
+            } else {
+                $this->only = array_flip(array_diff(['data', 'meta'], $only));
+            }
+        }
+
+        // set output format
+        $this->format = config('transfugio.http.format');
     }
 
-    if (((property_exists($this, 'item_id') && $this->item_id !== 0)
-    ||  !property_exists($this, 'item_id')) && !class_exists($this->model))
+    public function __call($method, $parameters)
     {
-      throw new \LogicException("The requested model {$this->model} is invalid.");
+        if (starts_with($method, 'respond')) {
+            $responseBuilder = new ResponseBuilder($this->format, [
+                'only'      => $this->only,
+                'modelName' => class_basename($this->model),
+                'includes'  => ($this->request->has('includes')) ? $this->request->get('includes') : [],
+            ]);
+
+            return call_user_func_array([$responseBuilder, $method], $parameters);
+        }
+
+        return parent::__call($method, $parameters);
     }
-
-    $this->request = $request;
-
-    // check for only parameter to limit output
-    if ($request->input('only'))
-    {
-      $only = explode(',', $request->input('only'));
-
-      $validator = app('validator')->make(
-        ['only' => $only],
-        ['only' => 'array|in:data,meta']
-      );
-
-      if ($validator->failed())
-      {
-        $this->respondWithError("Invalid value for `only`.");
-      } else
-      {
-        $this->only = array_flip(array_diff(['data', 'meta'], $only));
-      }
-    }
-
-    // set output format
-    $this->format = config('transfugio.http.format');
-  }
-
-  public function __call($method, $parameters)
-  {
-    if (starts_with($method, 'respond'))
-    {
-      $responseBuilder = new ResponseBuilder($this->format, [
-        'only' => $this->only,
-        'modelName' => class_basename($this->model),
-        'includes' => ($this->request->has('includes')) ? $this->request->get('includes') : [],
-      ]);
-
-      return call_user_func_array([$responseBuilder, $method], $parameters);
-    }
-
-    return parent::__call($method, $parameters);
-  }
 }
