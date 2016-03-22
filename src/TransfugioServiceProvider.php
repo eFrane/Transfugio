@@ -18,9 +18,7 @@ class TransfugioServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->publishes([
-            __DIR__ . '/../config/transfugio.php' => config_path('transfugio.php'),
-        ]);
+        $this->mergeConfigFrom(__DIR__ . '/../config/transfugio.php', 'transfugio');
     }
 
     /**
@@ -33,5 +31,9 @@ class TransfugioServiceProvider extends ServiceProvider
         require __DIR__ . '/helpers.php';
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'transfugio');
+
+        $this->publishes([
+            __DIR__ . '/../config/transfugio.php' => config_path('transfugio.php'),
+        ]);
     }
 }

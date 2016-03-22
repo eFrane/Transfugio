@@ -37,7 +37,10 @@ class APIController extends Controller
         // check for valid implementing class
         if (!is_string($this->model)) {
             $controllerName = get_called_class();
-            $baseName = substr($controllerName, 0, strpos($controllerName, 'Controller'));
+            $controllerNameComponents = explode('\\', $controllerName);
+
+            $baseName = array_pop($controllerNameComponents);
+            $baseName = substr($baseName, 0, strrpos($baseName, 'Controller'));
 
             if (strlen($baseName) > 0) {
                 $this->model = sprintf('%s%s', config('transfugio.modelNamespace'), $baseName);
