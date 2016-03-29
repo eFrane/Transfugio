@@ -1,7 +1,7 @@
 <h4>Kurzbeschreibung</h4>
 
 <p>
-    {{ $documentation->getDescription() }}
+    {{ $documentation->getModelDescription() }}
 </p>
 
 <h4>Eigenschaften</h4>
