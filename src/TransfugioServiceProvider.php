@@ -34,7 +34,7 @@ class TransfugioServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../config/transfugio.php' => config_path('transfugio.php'),
-            __DIR__ . '/../resources/views'       => resource_path('views/vendor/transfugio'),
+            __DIR__ . '/../resources/views'       => base_path('resources/views/vendor/transfugio'),
         ]);
     }
 }

@@ -30,9 +30,9 @@
                 </div>
                 @include('transfugio::api.schema.format')
 
-                @if ($property->hasDescription())
+                @if ($field->hasDescription())
                     <p class="text-muted small">
-                        {{ $property->getDescription() }}
+                        {{ $field->getDescription() }}
                     </p>
                 @endif
             </div>
