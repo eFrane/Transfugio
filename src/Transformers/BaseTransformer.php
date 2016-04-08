@@ -8,9 +8,22 @@ abstract class BaseTransformer extends TransformerAbstract
   private $availableFormatters = [];
   private $loadedFormatters = [];
 
-  public function __construct()
+  private $isIncluding = false;
+
+  public function __construct($isIncluding = false)
   {
     $this->availableFormatters = config('transfugio.transformers.formatHelpers');
+    $this->setIncluding($isIncluding);
+  }
+
+  public function isIncluding()
+  {
+    return $this->isIncluding;
+  }
+
+  public function setIncluding($isIncluding)
+  {
+    $this->isIncluding = $isIncluding;
   }
 
   /**
