@@ -37,7 +37,7 @@ class SanitizedDataArraySerializer extends DataArraySerializer
                 $url = Http::createFromString($value); //Url::createFromUrl($value);
 
                 $modifiedQuery = new Query($url->getQuery());
-                $modifiedQuery->merge("format={$format}");
+                $modifiedQuery = $modifiedQuery->merge("format={$format}");
 
                 $value = strval($url->withQuery($modifiedQuery->__toString()));
             }
