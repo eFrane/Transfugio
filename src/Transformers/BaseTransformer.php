@@ -29,6 +29,8 @@ abstract class BaseTransformer extends TransformerAbstract
     public function setLoadedFormatters($loadedFormatters)
     {
         $this->loadedFormatters = $loadedFormatters;
+
+        return $this;
     }
 
     /**
@@ -45,6 +47,8 @@ abstract class BaseTransformer extends TransformerAbstract
     public function setIncluded($included)
     {
         $this->included = $included;
+
+        return $this;
     }
 
     /**
