@@ -1,8 +1,6 @@
 <?php namespace EFrane\Transfugio\Transformers;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use League\Fractal\Scope;
 use League\Fractal\TransformerAbstract;
 
 abstract class BaseTransformer extends TransformerAbstract
@@ -89,28 +87,6 @@ abstract class BaseTransformer extends TransformerAbstract
 
             return $this->loadedFormatters[$formatHelperName]->format($value[0]);
         }
-    }
-
-    public function processIncludedResources(Scope $scope, $data)
-    {
-        $includedData = [];
-
-        $includes = $this->figureOutWhichIncludes($scope);
-
-        foreach ($includes as $include) {
-            if (($data instanceof Model) && is_null($data->{$include})) {
-                return null;
-            }
-
-            $includedData = $this->includeResourceIfAvailable(
-                $scope,
-                $data,
-                $includedData,
-                $include
-            );
-        }
-
-        return $includedData === [] ? false : $includedData;
     }
 
     /**
