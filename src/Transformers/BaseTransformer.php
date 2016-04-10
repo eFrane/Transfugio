@@ -90,6 +90,26 @@ abstract class BaseTransformer extends TransformerAbstract
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function item($data, $transformer, $resourceKey = null)
+    {
+        if ($this->isIncluded() && is_null($data)) return null;
+
+        return parent::item($data, $transformer, $resourceKey);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function collection($data, $transformer, $resourceKey = null)
+    {
+        if ($this->isIncluded() && is_null($data)) return null;
+
+        return parent::collection($data, $transformer, $resourceKey);
+    }
+
+    /**
      * Get a route list (object list) from a Collection
      *
      * @param string $routeName
