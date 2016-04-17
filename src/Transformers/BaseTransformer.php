@@ -35,24 +35,6 @@ abstract class BaseTransformer extends TransformerAbstract
     }
 
     /**
-     * @return boolean
-     */
-    public function isIncluded()
-    {
-        return $this->included;
-    }
-
-    /**
-     * @param boolean $included
-     */
-    public function setIncluded($included)
-    {
-        $this->included = $included;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getAvailableFormatters()
@@ -103,10 +85,29 @@ abstract class BaseTransformer extends TransformerAbstract
     }
 
     /**
+     * @return boolean
+     */
+    public function isIncluded()
+    {
+        return $this->included;
+    }
+
+    /**
+     * @param boolean $included
+     */
+    public function setIncluded($included)
+    {
+        $this->included = $included;
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
-    protected function collection($data, BaseTransformer $transformer, $resourceKey = null)
+    protected function collection($data, $transformer, $resourceKey = null)
     {
+        /* @var BaseTransformer $transformer */
         if ($transformer->isIncluded() && is_null($data)) return null;
 
         return parent::collection($data, $transformer, $resourceKey);
