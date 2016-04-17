@@ -105,9 +105,9 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * @inheritDoc
      */
-    protected function collection($data, $transformer, $resourceKey = null)
+    protected function collection($data, BaseTransformer $transformer, $resourceKey = null)
     {
-        if ($this->isIncluded() && is_null($data)) return null;
+        if ($transformer->isIncluded() && is_null($data)) return null;
 
         return parent::collection($data, $transformer, $resourceKey);
     }
