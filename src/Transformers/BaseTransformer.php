@@ -73,8 +73,10 @@ abstract class BaseTransformer extends TransformerAbstract
 
     public function __call($formatHelperMethod, array $value)
     {
-        if (substr($formatHelperMethod, 0, 6) !== 'format')
-            throw new \LogicException("Format helper {$formatHelperMethod} is invalid");
+        // circumvent PHP sometimes prefering __call over existing methods
+        if (method_exists($this, $formatHelperMethod)) {
+            return call_user_func_array([&$this, $formatHelperMethod], $value);
+        }
 
         $formatHelperName = strtolower(substr($formatHelperMethod, 6));
 
