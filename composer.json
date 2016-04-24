@@ -22,14 +22,11 @@
     "symfony/yaml": ">=2.6",
     "league/fractal": "*",
     "illuminate/http": ">=5.1",
-    "league/uri": "^4.1"
-  },
-  "suggest": {
-    "phpdocumentor/reflection-docblock": "Install to use PHPDoc documentation."
+    "league/uri": "^4.1",
+    "phpdocumentor/reflection-docblock": "^2.0"
   },
   "license": "BSD 2 Clause",
   "require-dev": {
-    "codeception/codeception": "^2.1",
-    "phpdocumentor/reflection-docblock": "^2.0"
+    "codeception/codeception": "^2.1"
   }
 }
