@@ -1,66 +1,44 @@
 <div class="row">
     <div class="col-xs-12">
-        <h3>Parameter</h3>
         <p>
-            Zur Einschränkung der ausgegebenen Daten bietet die OParl API die
-            folgende Parametersyntax an. Der <code>format</code>-Parameter ist dabei eine Besonderheit dieser Implementierung.
+            Diese Implementierung der OParl API bietet verschiedene Ausgabeformate. Zudem respektiert sie den
+            in vielen Systemen gebräuchlichen <code>accept: application/json</code>-Header. Wenn dieser Header
+            nicht benutzt werden kann/soll, oder ein anderes Format gewünscht ist, kann jedem Request
+            ein <code>?format=[formatName]</code> beigefügt werden.
         </p>
 
-        <pre><code class="language-bash">{{ url('/api/v1/') }}/&lt;entity&gt;?[format=&lt;format&gt;][&amp;created_since=&lt;datetime&gt;][&amp;created_until=&lt;datetime&gt;][&amp;modified_since=&lt;datetime&gt;][&amp;modified_until=&lt;datetime&gt;]</code></pre>
+        <h3>Unterstützte Formate</h3>
 
-        <dl class="dl-horizontal">
-            <dt>format</dt>
-            <dd>
-                <div><strong>Datentyp:&nbsp;</strong><samp>string</samp></div>
+        <ul>
+            <li><a href="{{ $url }}?format=html">html</a></li>
+            <li><a href="{{ $url }}?format=json" target="_blank">json</a></li>
+            <li><a href="{{ $url }}?format=yaml" target="_blank">yaml</a></li>
+            {{--<li><a href="{{ $url }}?format=xml" target="_blank">xml</a></li>--}}
+        </ul>
 
-                <p>
-                    Wählt das gewünschte Format aus. Es ist sowohl der Zugriff auf die <a href="{{ $url }}?format=html">html-Variante dieser Seite</a>
-                    als auch auf die <a href="{{ $url }}?format=json" target="_blank">json-Ausgabe</a> möglich.
-                </p>
-                <p>
-                    Wird `format` nicht angegeben, dann wird gemäß der OParl-Spezifikation json ausgegeben.
-                </p>
-            </dd>
+        <p>
+            Hier sind einige Zugriffsbeispiele für diesen Endpunkt:
+        </p>
 
-            <dt>created_since</dt>
-            <dd>
-                <div><strong>Datentyp:&nbsp;</strong><samp>datetime</samp></div>
+        <h3>Shell</h3>
 
-                <p>
-                    Schränkt die Liste auf alle Suchergebnisse ein, die seit einschließlich dem
-                    angegebenen Zeitpunkt erstellt wurden.
-                </p>
-            </dd>
+        <pre><code class="language-bash">$ curl "{{ $url }}?format=json"</code></pre>
+        <pre><code class="language-bash">$ http --json get "{{ $url }}"</code></pre>
 
-            <dt>created_until</dt>
-            <dd>
-                <div><strong>Datentyp:&nbsp;</strong><samp>datetime</samp></div>
+        <div class="pull-right">
+            <p class="small">(* <a href="//github.com/jakubroztocil/httpie">http</a>)</p>
+        </div>
 
-                <p>
-                    Schränkt die Liste auf alle Suchergebnisse ein, die bis einschließlich dem
-                    angegebenen Zeitpunkt erstellt wurden.
-                </p>
-            </dd>
+        <h3>Javascript (<a href="//jquery.com">jQuery</a>)</h3>
 
-            <dt>modifed_since</dt>
-            <dd>
-                <div><strong>Datentyp:&nbsp;</strong><samp>datetime</samp></div>
+        <pre><code class="language-javascript">@include('transfugio::api.examples.js')</code></pre>
 
-                <p>
-                    Schränkt die Liste auf alle Suchergebnisse ein, die seit einschließlich dem
-                    angegebenen Zeitpunkt verändert wurden.
-                </p>
-            </dd>
+        <h3>Python (<a href="//python-requests.org">Requests</a>)</h3>
 
-            <dt>modifed_until</dt>
-            <dd>
-                <div><strong>Datentyp:&nbsp;</strong><samp>datetime</samp></div>
+        <pre><code class="language-python">@include('transfugio::api.examples.python')</code></pre>
 
-                <p>
-                    Schränkt die Liste auf alle Suchergebnisse ein, die bis einschließlich dem
-                    angegebenen Zeitpunkt verändert wurden.
-                </p>
-            </dd>
-        </dl>
+        <h3>PHP (<a href="//guzzle.readthedocs.org/en/latest/">Guzzle</a>)</h3>
+
+        <pre><code class="language-php">@include('transfugio::api.examples.php')</code></pre>
     </div>
 </div>
