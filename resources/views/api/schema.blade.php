@@ -45,6 +45,6 @@
     <h4 class="text-muted">Legende</h4>
     <ul class="list-unstyled">
         <li class="text-danger">Zwingende Eigenschaft</li>
-        <li>Empfohlene Eigenschaft</li>
+        <li class="text-success">Empfohlene Eigenschaft</li>
     </ul>
 </div>
