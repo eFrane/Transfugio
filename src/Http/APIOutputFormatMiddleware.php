@@ -1,5 +1,7 @@
 <?php namespace EFrane\Transfugio\Http;
 
+use Illuminate\Http\Request;
+
 class APIOutputFormatMiddleware
 {
     public function handle($request, \Closure $next)
@@ -9,7 +11,7 @@ class APIOutputFormatMiddleware
         return $next($request);
     }
 
-    private function determineOutputFormat($request)
+    private function determineOutputFormat(Request $request)
     {
         if ($request->wantsJson()) {
             return 'json_accept';
