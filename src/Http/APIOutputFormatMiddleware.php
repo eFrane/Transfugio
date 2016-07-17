@@ -2,26 +2,31 @@
 
 class APIOutputFormatMiddleware
 {
-  private function determineOutputFormat($request)
-  {
-    if ($request->wantsJson())
-      return 'json_accept';
-
-    switch ($request->input('format'))
+    public function handle($request, \Closure $next)
     {
-      case 'json': return 'json';
-      case 'xml':  return 'xml';
-      case 'yaml': return 'yaml';
-      case 'html': return 'html';
+        config(['transfugio.http.format' => $this->determineOutputFormat($request)]);
 
-      default: return 'json_accept';
+        return $next($request);
     }
-  }
 
-  public function handle($request, \Closure $next)
-  {
-    config(['transfugio.http.format' => $this->determineOutputFormat($request)]);
+    private function determineOutputFormat($request)
+    {
+        if ($request->wantsJson()) {
+            return 'json_accept';
+        }
 
-    return $next($request);
-  }
+        switch ($request->input('format')) {
+            case 'json':
+                return 'json';
+            case 'xml':
+                return 'xml';
+            case 'yaml':
+                return 'yaml';
+            case 'html':
+                return 'html';
+
+            default:
+                return 'json_accept';
+        }
+    }
 }
