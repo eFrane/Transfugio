@@ -82,7 +82,7 @@ class APIController extends Controller
         if (starts_with($method, 'respond')) {
             $responseBuilder = new ResponseBuilder($this->format, [
                 'only'      => $this->only,
-                'modelName' => class_basename($this->model),
+                'modelName' => $this->getModelName(),
                 'includes'  => ($this->request->has('includes')) ? $this->request->get('includes') : [],
             ]);
 
@@ -90,5 +90,10 @@ class APIController extends Controller
         }
 
         return parent::__call($method, $parameters);
+    }
+
+    public function getModelName()
+    {
+        return class_basename($this->model);
     }
 }
