@@ -51,8 +51,9 @@ class EloquentWorker implements TransformerWorker
             $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
 
             return $this->manager->createData($resource)->toArray();
-        } catch (\OutOfBoundsException $e) {
+        } catch (\OutOfRangeException $e) {
             $emptyResource = new Collection([], []);
+            $emptyResource->setPaginator(new IlluminatePaginatorAdapter($paginator));
 
             return $this->manager->createData($emptyResource)->toArray();
         }
