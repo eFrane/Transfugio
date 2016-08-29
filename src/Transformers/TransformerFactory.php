@@ -54,7 +54,7 @@ class TransformerFactory
   static public function makeForCollection(Collection $collection)
   {
     if ($collection->count() === 0)
-      throw new \OutOfRangeException("Can't access collection model.");
+      throw new \OutOfRangeException("Requested collection does not contain any items");
 
     return static::makeForModel($collection->first());
   }
