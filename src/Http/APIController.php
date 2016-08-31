@@ -43,9 +43,12 @@ class APIController extends Controller
             $baseName = substr($baseName, 0, strrpos($baseName, 'Controller'));
 
             if (strlen($baseName) > 0) {
-                $this->model = sprintf('%s%s', config('transfugio.modelNamespace'), $baseName);
-            } else {
-                throw new \LogicException("API controllers must have a valid \$model property.");
+                $modelClass = sprintf('%s%s', config('transfugio.modelNamespace'), $baseName);
+                if (class_exists($modelClass)) {
+                    $this->model = $modelClass;
+                } else {
+                    throw new \LogicException("API controllers must have a valid \$model property.");
+                }
             }
         }
 
