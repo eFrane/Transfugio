@@ -1,7 +1,5 @@
 <?php
 
-// TODO: change the delimiter on where clauses to a blank space
-
 if (!function_exists('encode_where')) {
     /**
      * @param array $where
