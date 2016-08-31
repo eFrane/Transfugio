@@ -12,7 +12,7 @@ if (!function_exists('encode_where'))
   {
     $parameters = [];
     foreach ($where as $key => $value)
-      $parameters[] = sprintf('%s:%s', $key, $value);
+      $parameters[] = sprintf('%s_%s', $key, $value);
 
     return implode(',', $parameters);
   }
@@ -31,7 +31,7 @@ if (!function_exists('decode_where'))
     $clauses = [];
     foreach ($where as $clause)
     {
-      $colon = strpos($clause, ':');
+      $colon = strpos($clause, '_');
 
       if ($colon > 0)
       {
