@@ -84,16 +84,13 @@ class ResponseBuilder
 
             $response->setModelName($this->options['modelName']);
 
-            $response->setIsCollection(
-                isset($this->options['paginationCode'])
-                && strlen($this->options['paginationCode']) > 0
-            );
-
-            if (isset($this->options['paginationCode'])) {
+            if (isset($this->options['paginationCode'])
+            && strlen($this->options['paginationCode']) > 0) {
+                $response->setIsCollection = true;
                 $response->setPaginationCode($this->options['paginationCode']);
             }
 
-            $response->setIsError($status !== 200);
+            $response->setIsError(200 <= $status && $status <= 299);
 
             $response->render();
         } else {
