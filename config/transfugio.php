@@ -24,7 +24,9 @@
     ],
 
     'web' => [
+        'documentationEnabled' => false, // Toggle the auto-documentation feature
+
         'documentationType' => 'JSONSchema',
-        'documentationRoot' => '/resources/assets/schema',
+        'documentationRoot' => '',
     ],
 ];

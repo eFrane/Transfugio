@@ -25,12 +25,18 @@
                 </div>
             @endif
             <div class="row">
+                @if ($documentationEnabled)
                 <div class="col-xs-12 col-md-4">
                     @include('transfugio::api.sidebar')
                 </div>
                 <div class="col-xs-12 col-md-8">
                     @include('transfugio::api.main')
                 </div>
+                @else
+                <div class="col-xs-12 col-md-8 col-md-offset-2">
+                    @include('transfugio::api.main')
+                </div>
+                @endif
             </div>
             <div class="row">
                 <div class="col-xs-12">

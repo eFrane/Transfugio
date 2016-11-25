@@ -46,7 +46,6 @@ class WebView extends Response
   public function render()
   {
     $data = [
-      'documentation'   => $this->loadDocumentation(),
       'url'             => app('request')->url(),
       'json'            => $this->json,
       'module'          => $this->modelName,
@@ -54,6 +53,13 @@ class WebView extends Response
       'paginationCode'  => $this->paginationCode,
       'collectionClass' => $this->collectionClass,
     ];
+
+    if (config('transfugio.web.documentationEnabled')) {
+      $data = array_merge($data, [
+        'documentationEnabled' => true,
+        'documentation' => $this->loadDocumentation(),
+      ]);
+    }
 
     $this->setContent(view('transfugio::api.base', $data));
   }
