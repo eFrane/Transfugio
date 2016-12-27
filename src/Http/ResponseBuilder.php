@@ -77,16 +77,6 @@ class ResponseBuilder
         // transform to output format
         $data = $this->responseFormatter->format($data);
 
-        return $this->generateResponse($data, $status);
-    }
-
-    /**
-     * @param string $data
-     * @param $status
-     * @return mixed
-     **/
-    protected function generateResponse($data, $status)
-    {
         $headers = ['Content-type' => $this->responseFormatter->getContentType()];
 
         if (config('transfugio.http.enableCORS')) {
@@ -99,7 +89,7 @@ class ResponseBuilder
             $response->setModelName($this->options['modelName']);
 
             if (isset($this->options['paginationCode'])
-            && strlen($this->options['paginationCode']) > 0) {
+                && strlen($this->options['paginationCode']) > 0) {
                 $response->setIsCollection = true;
                 $response->setPaginationCode($this->options['paginationCode']);
             }
