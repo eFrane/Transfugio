@@ -104,7 +104,7 @@ class ResponseBuilder
                 $response->setPaginationCode($this->options['paginationCode']);
             }
 
-            $response->setIsError(200 <= $status && $status <= 299);
+            $response->setIsError(400 <= $status && $status <= 599);
 
             $response->render();
         } else {
