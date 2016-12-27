@@ -48,6 +48,10 @@ class EloquentWorker implements TransformerWorker
             $transformer = TransformerFactory::makeForCollection($collection);
 
             $resource = new Collection($collection, $transformer);
+            if ($transformer->isIncluded()) {
+                $resource->setResourceKey('included');
+            }
+
             $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
 
             return $this->manager->createData($resource)->toArray();
