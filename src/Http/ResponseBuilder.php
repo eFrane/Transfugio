@@ -1,5 +1,7 @@
 <?php namespace EFrane\Transfugio\Http;
 
+use EFrane\Transfugio\Http\Formatter\FormatterDisabledException;
+use EFrane\Transfugio\Http\Formatter\FormatterFactory;
 use EFrane\Transfugio\Transformers\EloquentWorker;
 use EFrane\Transfugio\Web\WebView;
 use Illuminate\Http\Response;
@@ -13,7 +15,19 @@ class ResponseBuilder
 
     public function __construct($format, array $options = [])
     {
-        $this->responseFormatter = Formatter\FormatterFactory::get($format);
+        try {
+            $enabledFormatters = collect(config('transfugio.enabledFormatters'))->filter(function($value) {
+                return !!$value;
+            });
+
+            $formatterFactory = new FormatterFactory($enabledFormatters);
+
+            $this->responseFormatter = $formatterFactory->get($format);
+        } catch (FormatterDisabledException $e) {
+            // TODO: this needs to actually store that there was an error and return it once respond() is called
+            $this->respondWithError('The requested output format is disabled.');
+        }
+
         $this->extractOptions($format, $options);
     }
 

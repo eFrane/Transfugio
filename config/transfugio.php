@@ -29,4 +29,12 @@
         'documentationType' => 'JSONSchema',
         'documentationRoot' => '',
     ],
+
+    'enabledFormatters' => [
+        // enable or disable output formatters (?format=<format>)
+        'html' => true,
+        'json' => true,
+        'yaml' => true,
+        'xml'  => false,
+    ],
 ];
