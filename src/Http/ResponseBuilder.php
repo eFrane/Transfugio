@@ -16,7 +16,7 @@ class ResponseBuilder
     public function __construct($format, array $options = [])
     {
         try {
-            $enabledFormatters = collect(config('transfugio.enabledFormatters'))->filter(function($value) {
+            $enabledFormatters = collect(config('transfugio.enabledFormatters'))->filter(function ($value) {
                 return !!$value;
             });
 
@@ -29,6 +29,59 @@ class ResponseBuilder
         }
 
         $this->extractOptions($format, $options);
+    }
+
+    public function respondWithError($message = "An unknown error occurred, please try again later.", $status = 400)
+    {
+        $data = collect(['error' => ['message' => $message, 'status' => $status]]);
+
+        return $this->respond($data, $status, true);
+    }
+
+    public function respond(Collection $data, $status = 200, $processed = false)
+    {
+        if (!$processed) {
+            // remove unwanted output data
+            if (count($this->options['only']) > 0) {
+                $data = collect(array_diff_key($data->toArray(), $this->options['only']));
+            }
+
+            // TODO: add reusable request parameters to output
+        }
+
+        // transform to output format
+        $data = $this->responseFormatter->format($data);
+
+        $headers = ['Content-type' => $this->responseFormatter->getContentType()];
+
+        if (config('transfugio.http.enableCORS')) {
+            $headers['Access-Control-Allow-Origin'] = '*';
+        }
+
+        if ($this->options['format'] === 'html') {
+            $response = new WebView($data, $status);
+
+            $response->setModelName($this->options['modelName']);
+
+            if (isset($this->options['paginationCode'])
+                && strlen($this->options['paginationCode']) > 0
+            ) {
+                $response->setIsCollection = true;
+                $response->setPaginationCode($this->options['paginationCode']);
+            }
+
+            $response->setIsError(400 <= $status && $status <= 599);
+
+            $response->render();
+        } else {
+            $response = new Response($data, $status);
+        }
+
+        foreach ($headers as $name => $value) {
+            $response->header($name, $value);
+        }
+
+        return $response;
     }
 
     /**
@@ -63,51 +116,6 @@ class ResponseBuilder
             : $worker->transformModel($result);
     }
 
-    public function respond(Collection $data, $status = 200, $processed = false)
-    {
-        if (!$processed) {
-            // remove unwanted output data
-            if (count($this->options['only']) > 0) {
-                $data = collect(array_diff_key($data->toArray(), $this->options['only']));
-            }
-
-            // TODO: add reusable request parameters to output
-        }
-
-        // transform to output format
-        $data = $this->responseFormatter->format($data);
-
-        $headers = ['Content-type' => $this->responseFormatter->getContentType()];
-
-        if (config('transfugio.http.enableCORS')) {
-            $headers['Access-Control-Allow-Origin'] = '*';
-        }
-
-        if ($this->options['format'] === 'html') {
-            $response = new WebView($data, $status);
-
-            $response->setModelName($this->options['modelName']);
-
-            if (isset($this->options['paginationCode'])
-                && strlen($this->options['paginationCode']) > 0) {
-                $response->setIsCollection = true;
-                $response->setPaginationCode($this->options['paginationCode']);
-            }
-
-            $response->setIsError(400 <= $status && $status <= 599);
-
-            $response->render();
-        } else {
-            $response = new Response($data, $status);
-        }
-
-        foreach ($headers as $name => $value) {
-            $response->header($name, $value);
-        }
-
-        return $response;
-    }
-
     public function respondWithModel(\Illuminate\Database\Eloquent\Model $item, $status = 200)
     {
         $this->prepareEloquentResult($item);
@@ -137,13 +145,6 @@ class ResponseBuilder
         }
 
         return $this->respondWithError($message, $status);
-    }
-
-    public function respondWithError($message = "An unknown error occurred, please try again later.", $status = 400)
-    {
-        $data = collect(['error' => ['message' => $message, 'status' => $status]]);
-
-        return $this->respond($data, $status, true);
     }
 
     public function respondWithForbidden($message = "Access to this resource is forbidden.", $status = 403)

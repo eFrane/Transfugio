@@ -64,11 +64,14 @@ abstract class BaseTransformer extends TransformerAbstract
 
         if (array_key_exists($formatHelperName, $this->availableFormatters)) {
             // load the format helper
-            if (!array_key_exists($formatHelperName, $this->loadedFormatters))
+            if (!array_key_exists($formatHelperName, $this->loadedFormatters)) {
                 $this->loadedFormatters[$formatHelperName] = new $this->availableFormatters[$formatHelperName];
+            }
 
             // check for null value
-            if (is_null($value[0])) return null;
+            if (is_null($value[0])) {
+                return null;
+            }
 
             return $this->loadedFormatters[$formatHelperName]->format($value[0]);
         }
@@ -79,7 +82,9 @@ abstract class BaseTransformer extends TransformerAbstract
      */
     protected function item($data, $transformer, $resourceKey = null)
     {
-        if ($this->isIncluded() && is_null($data)) return null;
+        if ($this->isIncluded() && is_null($data)) {
+            return null;
+        }
 
         return parent::item($data, $transformer, $resourceKey);
     }
@@ -109,7 +114,9 @@ abstract class BaseTransformer extends TransformerAbstract
     {
         /* @var BaseTransformer $transformer */
         // TODO: check if there is a necessity to only return null if a transformer is marked included
-        if (is_null($data)) return null;
+        if (is_null($data)) {
+            return null;
+        }
 
         return parent::collection($data, $transformer, $resourceKey);
     }
