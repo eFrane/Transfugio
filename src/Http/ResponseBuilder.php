@@ -40,48 +40,53 @@ class ResponseBuilder
 
     public function respond(Collection $data, $status = 200, $processed = false)
     {
-        if (!$processed) {
-            // remove unwanted output data
-            if (count($this->options['only']) > 0) {
-                $data = collect(array_diff_key($data->toArray(), $this->options['only']));
+        try {
+            if (!$processed) {
+                // remove unwanted output data
+                if (count($this->options['only']) > 0) {
+                    $data = collect(array_diff_key($data->toArray(), $this->options['only']));
+                }
+
+                // TODO: add reusable request parameters to output
             }
 
-            // TODO: add reusable request parameters to output
-        }
+            // transform to output format
+            $data = $this->responseFormatter->format($data);
 
-        // transform to output format
-        $data = $this->responseFormatter->format($data);
+            $headers = ['Content-type' => $this->responseFormatter->getContentType()];
 
-        $headers = ['Content-type' => $this->responseFormatter->getContentType()];
-
-        if (config('transfugio.http.enableCORS')) {
-            $headers['Access-Control-Allow-Origin'] = '*';
-        }
-
-        if ($this->options['format'] === 'html') {
-            $response = new WebView($data, $status);
-
-            $response->setModelName($this->options['modelName']);
-
-            if (isset($this->options['paginationCode'])
-                && strlen($this->options['paginationCode']) > 0
-            ) {
-                $response->setIsCollection = true;
-                $response->setPaginationCode($this->options['paginationCode']);
+            if (config('transfugio.http.enableCORS')) {
+                $headers['Access-Control-Allow-Origin'] = '*';
             }
 
-            $response->setIsError(400 <= $status && $status <= 599);
+            if ($this->options['format'] === 'html') {
+                $response = new WebView($data, $status);
 
-            $response->render();
-        } else {
-            $response = new Response($data, $status);
+                $response->setModelName($this->options['modelName']);
+
+                if (isset($this->options['paginationCode'])
+                    && strlen($this->options['paginationCode']) > 0
+                ) {
+                    $response->setIsCollection = true;
+                    $response->setPaginationCode($this->options['paginationCode']);
+                }
+
+                $response->setIsError(400 <= $status && $status <= 599);
+
+                $response->render();
+            } else {
+                $response = new Response($data, $status);
+            }
+
+            foreach ($headers as $name => $value) {
+                $response->header($name, $value);
+            }
+
+            return $response;
+        } catch (\Exception $e)
+        {
+            return $this->respondWithError('An unknown error occurred.');
         }
-
-        foreach ($headers as $name => $value) {
-            $response->header($name, $value);
-        }
-
-        return $response;
     }
 
     /**
