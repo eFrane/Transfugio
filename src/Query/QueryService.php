@@ -38,7 +38,7 @@ class QueryService
 
     $this->modelInformation = new APIModelInformation($model);
 
-    $this->query = $model::query();
+    $this->query = $model::query()->withTrashed();
   }
 
   /**
