@@ -60,3 +60,15 @@ if (!function_exists('route_where')) {
         return $url;
     }
 }
+
+if (!function_exists('remove_empty_keys')) {
+    function remove_empty_keys(array $array) {
+        foreach ($array as $k => $v) {
+            if (is_null($v)) {
+                unset($array[$k]);
+            }
+        }
+
+        return $array;
+    }
+};
