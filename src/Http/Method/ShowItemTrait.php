@@ -29,7 +29,11 @@ trait ShowItemTrait
   {
     try
     {
-      $item = call_user_func($this->getResolveMethod(), $id);
+        if (starts_with($this->resolveMethod, 'model:')) {
+            $item = call_user_func([$this->model, 'withTrashed'])->{$this->getResolveMethod()}($id);
+        } else {
+            $item = call_user_func($this->getResolveMethod(), $id);
+        }
 
       if ($item instanceof Builder)
         $item = $item->first();
@@ -87,7 +91,7 @@ trait ShowItemTrait
       $method = $this->resolveMethod;
     } else if (strpos($this->resolveMethod, 'model:') >= 0)
     {
-      $method = [$this->model, substr($this->resolveMethod, strpos($this->resolveMethod, ':') + 1)];
+      $method = substr($this->resolveMethod, strpos($this->resolveMethod, ':'));
       return $method;
     } else if (strpos($this->resolveMethod, 'self:') >= 0)
     {

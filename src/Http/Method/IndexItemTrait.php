@@ -58,7 +58,7 @@ trait IndexItemTrait
 
     try
     {
-      $item = call_user_func([$this->model, 'findOrFail'], $this->item_id);
+      $item = call_user_func([$this->model, 'withTrashed'])->findOrFail($this->item_id);
       return $this->respondWithModel($item);
     } catch (ModelNotFoundException $e)
     {
