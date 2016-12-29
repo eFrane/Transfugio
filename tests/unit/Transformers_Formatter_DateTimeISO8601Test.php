@@ -12,7 +12,7 @@ class Transformers_Formatter_DateTimeISO8601Test extends \Codeception\TestCase\T
 
   public function testInstantiate()
   {
-    $this->assertInstanceOf('EFrane\Transfugio\Transformers\Formatter\DateISO8601', new DateTimeISO8601());
+    $this->assertInstanceOf('EFrane\Transfugio\Transformers\Formatter\DateTimeISO8601', new DateTimeISO8601());
   }
 
   public function testIsFormatHelper()
@@ -24,7 +24,7 @@ class Transformers_Formatter_DateTimeISO8601Test extends \Codeception\TestCase\T
   {
     $formatter = new DateTimeISO8601();
 
-    $this->assertEquals('2016-01-01T22:33:44+00:00', $formatter->format('2016-01-01T22:33:44+00:00'));
+    $this->assertEquals('2016-01-01T22:33:44+0000', $formatter->format(Carbon::parse('2016-01-01T22:33:44+0000')));
   }
 
   /**
