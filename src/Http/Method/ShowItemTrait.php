@@ -88,7 +88,7 @@ trait ShowItemTrait
             $method = $this->resolveMethod;
         } else {
             if (strpos($this->resolveMethod, 'model:') >= 0) {
-                $method = substr($this->resolveMethod, strpos($this->resolveMethod, ':'));
+                $method = substr($this->resolveMethod, strpos($this->resolveMethod, ':') + 1);
                 return $method;
             } else {
                 if (strpos($this->resolveMethod, 'self:') >= 0) {
