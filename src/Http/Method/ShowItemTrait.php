@@ -1,9 +1,8 @@
-<?php  namespace EFrane\Transfugio\Http\Method; 
-
-use LogicException;
+<?php namespace EFrane\Transfugio\Http\Method;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use \Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Builder;
+use LogicException;
 
 /**
  * Show a model entity
@@ -16,94 +15,94 @@ use \Illuminate\Database\Query\Builder;
  **/
 trait ShowItemTrait
 {
-  /**
-   * @var string
-   **/
-  protected $resolveMethod = 'model:findOrFail';
+    /**
+     * @var string
+     **/
+    protected $resolveMethod = 'model:findOrFail';
 
-  /**
-   * @param $id
-   * @return \Illuminate\Http\Response
-   **/
-  public function show($id)
-  {
-    try
+    /**
+     * @param $id
+     * @return \Illuminate\Http\Response
+     **/
+    public function show($id)
     {
-        if (starts_with($this->resolveMethod, 'model:')) {
-            $item = call_user_func([$this->model, 'withTrashed'])->{$this->getResolveMethod()}($id);
+        try {
+            if (starts_with($this->resolveMethod, 'model:')) {
+                $item = call_user_func([$this->model, 'withTrashed'])->{$this->getResolveMethod()}($id);
+            } else {
+                $item = call_user_func($this->getResolveMethod(), $id);
+            }
+
+            if ($item instanceof Builder) {
+                $item = $item->first();
+            }
+
+            return $this->respondWithModel($item);
+        } catch (ModelNotFoundException $e) {
+            return $this->respondWithNotFound("The requested item in `{$this->getModelName()}` does not exist.");
+        }
+    }
+
+    /**
+     * Get the resolve method for the query.
+     *
+     * By default, entities are resolved by their id field. It is, however,
+     * possible to choose a different resolving method for entities. You may
+     * for instance have an API endpoint for stored git commits and it is obviously
+     * not in anyway logical to return the id of that commit's database entry.
+     * In that case, the following would resolve commits by their sha-hash:
+     *
+     * <code>
+     *    class CommitsController extends APIController
+     *    {
+     *         use \Transfugio\Http\Method\IndexPaginatedTrait;
+     *         use \Transfugio\Http\Method\ShowItemTrait;
+     *
+     *         protected $model = 'Git\Commit';
+     *         protected $resolveMethod = 'model:whereSha1'; // or 'self:resolveShow'
+     *
+     *         protected function resolveShow($id)
+     *         {
+     *             return Git\Commit::whereSha1($id);
+     *         }
+     *    }
+     * </code>
+     *
+     * The inclined observer may already have noticed the two core principles for
+     * item resolving:
+     *
+     * 1) You can choose to either implement your own resolver method or to
+     *    just use an Eloquent way of retrieving a model instance. This is
+     *    signified by prefixing the method name with model (for Eloquent)
+     *    or self.
+     *
+     * 2) It is not necessary to return an actual model instance, the system
+     *    automatically checks for `\Illuminate\Database\Builder` instances and
+     *    fetches a model from them by calling `first()`.
+     *
+     * @return array The resolve method callable
+     **/
+    protected function getResolveMethod()
+    {
+        if (is_array($this->resolveMethod)) {
+            $method = $this->resolveMethod;
         } else {
-            $item = call_user_func($this->getResolveMethod(), $id);
+            if (strpos($this->resolveMethod, 'model:') >= 0) {
+                $method = substr($this->resolveMethod, strpos($this->resolveMethod, ':'));
+                return $method;
+            } else {
+                if (strpos($this->resolveMethod, 'self:') >= 0) {
+                    $method = [$this, substr($this->resolveMethod, strpos($this->resolveMethod, ':') + 1)];
+                } else {
+                    throw new LogicException("Unable to determine entity resolve method.");
+                }
+            }
         }
 
-      if ($item instanceof Builder)
-        $item = $item->first();
+        if (!method_exists($method[0], $method[1])) {
+            throw new LogicException("Resolve method does not exist");
+        }
 
-      return $this->respondWithModel($item);
-    } catch(ModelNotFoundException $e)
-    {
-      return $this->respondWithNotFound("The requested item in `{$this->getModelName()}` does not exist.");
+        return $method;
     }
-  }
-
-  /**
-   * Get the resolve method for the query.
-   *
-   * By default, entities are resolved by their id field. It is, however,
-   * possible to choose a different resolving method for entities. You may
-   * for instance have an API endpoint for stored git commits and it is obviously
-   * not in anyway logical to return the id of that commit's database entry.
-   * In that case, the following would resolve commits by their sha-hash:
-   *
-   * <code>
-   *    class CommitsController extends APIController
-   *    {
-   *         use \Transfugio\Http\Method\IndexPaginatedTrait;
-   *         use \Transfugio\Http\Method\ShowItemTrait;
-   *
-   *         protected $model = 'Git\Commit';
-   *         protected $resolveMethod = 'model:whereSha1'; // or 'self:resolveShow'
-   *
-   *         protected function resolveShow($id)
-   *         {
-   *             return Git\Commit::whereSha1($id);
-   *         }
-   *    }
-   * </code>
-   *
-   * The inclined observer may already have noticed the two core principles for
-   * item resolving:
-   *
-   * 1) You can choose to either implement your own resolver method or to
-   *    just use an Eloquent way of retrieving a model instance. This is
-   *    signified by prefixing the method name with model (for Eloquent)
-   *    or self.
-   *
-   * 2) It is not necessary to return an actual model instance, the system
-   *    automatically checks for `\Illuminate\Database\Builder` instances and
-   *    fetches a model from them by calling `first()`.
-   *
-   * @return array The resolve method callable
-   **/
-  protected function getResolveMethod()
-  {
-    if (is_array($this->resolveMethod))
-    {
-      $method = $this->resolveMethod;
-    } else if (strpos($this->resolveMethod, 'model:') >= 0)
-    {
-      $method = substr($this->resolveMethod, strpos($this->resolveMethod, ':'));
-      return $method;
-    } else if (strpos($this->resolveMethod, 'self:') >= 0)
-    {
-      $method = [$this, substr($this->resolveMethod, strpos($this->resolveMethod, ':') + 1)];
-    } else
-    {
-      throw new LogicException("Unable to determine entity resolve method.");
-    }
-
-    if (!method_exists($method[0], $method[1]))
-      throw new LogicException("Resolve method does not exist");
-
-    return $method;
-  }
 }
