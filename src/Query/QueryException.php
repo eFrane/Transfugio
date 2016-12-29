@@ -1,3 +1,5 @@
 <?php namespace EFrane\Transfugio\Query;
 
-class QueryException extends \RuntimeException {}
+class QueryException extends \RuntimeException
+{
+}

@@ -1,8 +1,8 @@
 <?php namespace EFrane\Transfugio\Transformers;
 
+use League\Fractal\Serializer\ArraySerializer;
 use League\Uri\Components\Query;
 use League\Uri\Schemes\Http;
-use League\Fractal\Serializer\ArraySerializer;
 
 class SanitizedArraySerializer extends ArraySerializer
 {
@@ -13,18 +13,29 @@ class SanitizedArraySerializer extends ArraySerializer
         return parent::item($resourceKey, $data);
     }
 
-    public function collection($resourceKey, array $data)
+    /**
+     * @param array $data
+     * @return array
+     **/
+    protected function reformatData(array $data)
     {
-        $data = $this->reformatData($data);
+        foreach ($data as $key => $value) {
+            if (is_null($value)
+                || (is_array($value) && count($value) == 0)
+            ) {
+                unset($data[$key]);
+            }
+        }
 
-        return parent::collection($resourceKey, $data);
+        return $this->applyFormatParameterToUrls($data);
     }
 
     protected function applyFormatParameterToUrls(array $data)
     {
         return array_map(function ($value) {
-            if (is_array($value))
+            if (is_array($value)) {
                 return $this->applyFormatParameterToUrls($value);
+            }
 
             $pattern = sprintf('/%s.+/', preg_quote(url(config('transfugio.rootURL')), '/'));
             $format = config('transfugio.http.format');
@@ -46,18 +57,10 @@ class SanitizedArraySerializer extends ArraySerializer
         }, $data);
     }
 
-    /**
-     * @param array $data
-     * @return array
-     **/
-    protected function reformatData(array $data)
+    public function collection($resourceKey, array $data)
     {
-        foreach ($data as $key => $value) {
-            if (is_null($value)
-                || (is_array($value) && count($value) == 0)
-            ) unset($data[$key]);
-        }
+        $data = $this->reformatData($data);
 
-        return $this->applyFormatParameterToUrls($data);
+        return parent::collection($resourceKey, $data);
     }
 }

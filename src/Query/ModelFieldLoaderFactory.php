@@ -1,16 +1,19 @@
 <?php namespace EFrane\Transfugio\Query;
 
-class ModelFieldLoaderFactory 
+class ModelFieldLoaderFactory
 {
-  public static function get($table, $databaseSystem)
-  {
-    switch ($databaseSystem)
+    public static function get($table, $databaseSystem)
     {
-      case 'sqlite': return new SQLiteModelFieldLoader($table); break;
-      case 'mysql': return new MySQLModelFieldLoader($table); break;
+        switch ($databaseSystem) {
+            case 'sqlite':
+                return new SQLiteModelFieldLoader($table);
+                break;
+            case 'mysql':
+                return new MySQLModelFieldLoader($table);
+                break;
 
-      default:
-        throw new \RuntimeException("{$databaseSystem} is not supported.");
+            default:
+                throw new \RuntimeException("{$databaseSystem} is not supported.");
+        }
     }
-  }
 }
