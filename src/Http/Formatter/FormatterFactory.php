@@ -24,7 +24,7 @@ class FormatterFactory
         }
 
         if (!$this->enabledFormats->contains($format)) {
-            throw new FormatterDisabledException("'{$format}' is disabled in transfugio's config");
+            throw FormatterException::formatDisabledException($format);
         }
 
         switch ($format) {
@@ -36,7 +36,7 @@ class FormatterFactory
                 return new HTMLFormatter();
 
             default:
-                throw new \LogicException("Requested unresolvable output format '{$format}'.");
+                throw FormatterException::formatUnknownException($format);
         }
     }
 }
