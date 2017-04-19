@@ -14,10 +14,30 @@ use \EFrane\Transfugio\Query\QueryException;
  * NOTE: Most of the work of this trait is done by the `QueryService`.
  *
  * @package EFrane\Transfugio\Http\Method
- * @see Query\QueryService
+ * @see \EFrane\Transfugio\Query\QueryService
+ * @see \EFrane\Transfugio\Http\APIController
  */
 trait IndexPaginatedTrait
 {
+    /**
+     * @var array default query parameters
+     */
+    protected $defaultQueryParameters = ['limit', 'where', 'include'];
+
+    /**
+     * It may sometimes be desirable to map a query to a specific parameter instead
+     * of constructing a rather complicated where-clause. This may also be necessary
+     * for compliance with third-party API specifications and the likes.
+     *
+     * Defining a parameter here results in this parameter being treated like
+     * a regular where-clause parameter, i.e. if the query resolver happens upon it,
+     * it will check wether a resolver for the parameter is registered and
+     * call it.
+     *
+     * @var array additional query parameters
+     */
+    protected $queryParameters = [];
+
   /**
    * @param Request $request
    * @return \Illuminate\Http\Response
@@ -26,11 +46,13 @@ trait IndexPaginatedTrait
   {
     try
     {
-      $parameters = $request->only(['limit', 'where', 'include']);
-      $query = QueryService::create($this->model, $parameters, function ($unresolved, $service)
-      {
-        return $this->resolveQuery($unresolved, $service);
-      });
+        $queryParameters = $this->defaultQueryParameters;
+        if (is_array($this->queryParameters) && count($this->queryParameters) > 0) {
+            $queryParameters = array_merge($queryParameters, $this->queryParameters);
+        }
+
+      $parameters = $request->only($queryParameters);
+      $query = QueryService::create($this->model, $parameters, [&$this, 'resolveQuery']);
 
       $paginated = $query->getQuery();
     } catch (QueryException $e)

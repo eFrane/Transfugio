@@ -46,13 +46,13 @@ class QueryService
      *
      * @param string $model
      * @param array $parameters
-     * @param \Closure $queryResolver
+     * @param callable $queryResolver
      *
      * @see prepare
      *
      * @return QueryService
      **/
-    public static function create($model, array $parameters, \Closure $queryResolver)
+    public static function create($model, array $parameters, callable $queryResolver)
     {
         return (new QueryService($model, $parameters))->run($queryResolver);
     }
@@ -106,6 +106,8 @@ class QueryService
         if (array_has($this->parameters, 'include') && !is_null($this->parameters['include'])) {
             $this->parseInclude();
         }
+
+        // TODO: handle additional parameters.
 
         // resolve query with caller
         if ($this->isUnresolved()) {
