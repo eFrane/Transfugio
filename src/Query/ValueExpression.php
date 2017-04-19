@@ -134,7 +134,9 @@ class ValueExpression
      **/
     protected function transformToFloat(&$value)
     {
-        // TODO: implement float transformation
+        if (preg_match('/\d+[.,]\d+/', $value)) {
+            $value = floatval($value);
+        }
     }
 
     /**
