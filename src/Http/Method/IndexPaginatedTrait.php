@@ -49,17 +49,14 @@ trait IndexPaginatedTrait
     public function index(Request $request)
     {
         try {
-            $queryParameters = $this->getQueryParameters();
+            $parameters = $request->only($this->getAllowedQueryParameters());
 
-            $parameters = $request->only($queryParameters);
             $query = QueryService::create($this->model, $parameters, [&$this, 'resolveQuery']);
 
-            $paginated = $query->getQuery();
+            return $this->respondWithPaginated($query->getQuery());
         } catch (QueryException $e) {
             return $this->respondWithNotAllowed("The requested query method is not allowed on `{$this->getModelName()}`.");
         }
-
-        return $this->respondWithPaginated($paginated);
     }
 
     /**
@@ -99,11 +96,11 @@ trait IndexPaginatedTrait
         foreach ($toResolve as $field => $valueExpression) {
             $method = sprintf("query%s", ucfirst(camel_case($field)));
 
-            if (method_exists($this, $method)) {
-                $this->{$method}($query, $valueExpression);
-            } else {
+            if (!method_exists($this, $method)) {
                 throw QueryException::queryMethodNotFoundException($method);
             }
+
+            $this->{$method}($query, $valueExpression);
         }
 
         return true;
@@ -114,7 +111,7 @@ trait IndexPaginatedTrait
      *
      * @return array
      */
-    protected function getQueryParameters()
+    protected function getAllowedQueryParameters()
     {
         $queryParameters = $this->defaultQueryParameters;
 
