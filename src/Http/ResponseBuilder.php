@@ -4,6 +4,7 @@ use EFrane\Transfugio\Http\Formatter\FormatterDisabledException;
 use EFrane\Transfugio\Http\Formatter\FormatterFactory;
 use EFrane\Transfugio\Transformers\EloquentWorker;
 use EFrane\Transfugio\Web\WebView;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -121,7 +122,7 @@ class ResponseBuilder
             : $worker->transformModel($result);
     }
 
-    public function respondWithModel(\Illuminate\Database\Eloquent\Model $item, $status = 200)
+    public function respondWithModel(Model $item, $status = 200)
     {
         $this->prepareEloquentResult($item);
 
