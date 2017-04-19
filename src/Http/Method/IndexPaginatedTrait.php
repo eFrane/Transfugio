@@ -83,7 +83,7 @@ trait IndexPaginatedTrait
         $this->{$method}($query, $valueExpression);
       } else
       {
-        throw new QueryException("Query method {$method} not found.");
+        throw QueryException::queryMethodNotFoundException($method);
       }
     }
 

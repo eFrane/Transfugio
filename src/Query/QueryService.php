@@ -111,7 +111,7 @@ class QueryService
         if ($this->isUnresolved()) {
             $result = $queryResolver($this->getUnresolvedParameters(), $this);
             if (!is_bool($result) && !$result) {
-                throw new QueryException("Query was not resolved successfully.");
+                throw QueryException::unsuccesfulQueryException();
             }
         }
     }
