@@ -24,11 +24,6 @@ use Illuminate\Http\Request;
 trait IndexPaginatedTrait
 {
     /**
-     * @var array default query parameters
-     */
-    protected $defaultQueryParameters = ['limit', 'where', 'include'];
-
-    /**
      * It may sometimes be desirable to map a query to a specific parameter instead
      * of constructing a rather complicated where-clause. This may also be necessary
      * for compliance with third-party API specifications and the likes.
@@ -113,7 +108,7 @@ trait IndexPaginatedTrait
      */
     protected function getAllowedQueryParameters()
     {
-        $queryParameters = $this->defaultQueryParameters;
+        $queryParameters = QueryService::getDefaultQueryParameters();
 
         if (is_array($this->queryParameters) && count($this->queryParameters) > 0) {
             $queryParameters = array_merge($queryParameters, $this->queryParameters);

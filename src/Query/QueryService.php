@@ -1,7 +1,14 @@
 <?php namespace EFrane\Transfugio\Query;
 
+use Carbon\Carbon;
+
 class QueryService
 {
+    /**
+     * @var array default query parameters
+     */
+    protected static $defaultQueryParameters = ['limit', 'where', 'include'];
+
     /**
      * @var string
      **/
@@ -23,6 +30,11 @@ class QueryService
     protected $query = null;
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    protected $unresolved = null;
+
+    /**
      * Setup a new query service
      *
      * Store the request information, load a model information object
@@ -35,6 +47,7 @@ class QueryService
     {
         $this->model = $model;
         $this->parameters = $parameters;
+        $this->unresolved = collect();
 
         $this->modelInformation = new APIModelInformation($model);
 
@@ -97,6 +110,10 @@ class QueryService
      */
     public function prepare(\Closure $queryResolver)
     {
+        // add custom conditions to unresolved
+        $this->unresolved = $this->unresolved
+            ->merge(collect($this->parameters)->except(self::getDefaultQueryParameters()));
+
         // parse where conditions
         if (array_has($this->parameters, 'where') && !is_null($this->parameters['where'])) {
             $this->parseWhere();
@@ -106,8 +123,6 @@ class QueryService
         if (array_has($this->parameters, 'include') && !is_null($this->parameters['include'])) {
             $this->parseInclude();
         }
-
-        // TODO: handle additional parameters.
 
         // resolve query with caller
         if ($this->isUnresolved()) {
@@ -152,7 +167,7 @@ class QueryService
         }
 
         if (count($unresolved) > 0) {
-            $this->parameters['unresolved'] = $unresolved;
+            $this->unresolved = $this->unresolved->merge($unresolved);
         }
     }
 
@@ -169,10 +184,13 @@ class QueryService
             $field = snake_case($field);
         }
 
+        /* @var Carbon $dateValue */
+        $dateValue = $valueExpression->getValue();
+
         $this->query->where(
             $field,
             $valueExpression->getExpression(),
-            $valueExpression->getValue()->toDateTimeString()
+            $dateValue->toDateTimeString()
         );
     }
 
@@ -211,7 +229,7 @@ class QueryService
      **/
     public function isUnresolved()
     {
-        return isset($this->parameters['unresolved']);
+        return $this->unresolved->count() > 0;
     }
 
     /**
@@ -221,7 +239,7 @@ class QueryService
      **/
     public function getUnresolvedParameters()
     {
-        return $this->parameters['unresolved'];
+        return $this->unresolved->toArray();
     }
 
     /**
@@ -295,5 +313,10 @@ class QueryService
     public function getQuery()
     {
         return $this->query;
+    }
+
+    public static function getDefaultQueryParameters()
+    {
+        return self::$defaultQueryParameters;
     }
 }
