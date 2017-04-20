@@ -109,12 +109,17 @@ trait IndexPaginatedTrait
     protected function getAllowedQueryParameters()
     {
         $queryParameters = QueryService::getDefaultQueryParameters();
+        $customParameters = $this->getCustomQueryParameters();
 
-        if (is_array($this->queryParameters) && count($this->queryParameters) > 0) {
-            $queryParameters = array_merge($queryParameters, $this->queryParameters);
+        if (is_array($customParameters) && count($customParameters) > 0) {
+            $queryParameters = array_merge($queryParameters, $customParameters);
         }
 
         return $queryParameters;
     }
 
+    protected function getCustomQueryParameters()
+    {
+        return [];
+    }
 }
