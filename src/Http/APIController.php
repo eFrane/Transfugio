@@ -34,7 +34,21 @@ class APIController extends Controller
      */
     public function __construct(Request $request)
     {
-        // check for valid implementing class
+        $this->checkForValidImplementingClass($request);
+        $this->configureOutputLimit($request);
+        $this->configureOutputFormat();
+    }
+
+    protected function checkForValidImplementingClass(Request $request)
+    {
+        $this->validateModel();
+        $this->validateItemId();
+
+        $this->request = $request;
+    }
+
+    protected function validateModel()
+    {
         if (!is_string($this->model)) {
             $controllerName = get_called_class();
             $controllerNameComponents = explode('\\', $controllerName);
@@ -51,16 +65,22 @@ class APIController extends Controller
                 }
             }
         }
+    }
 
+    protected function validateItemId()
+    {
         if (((property_exists($this, 'item_id') && $this->item_id !== 0)
                 || !property_exists($this, 'item_id')) && !class_exists($this->model)
         ) {
             throw new \LogicException("The requested model {$this->model} is invalid.");
         }
+    }
 
-        $this->request = $request;
-
-        // check for only parameter to limit output
+    /**
+     * @param Request $request
+     */
+    protected function configureOutputLimit(Request $request)
+    {
         if ($request->input('only')) {
             $only = explode(',', $request->input('only'));
 
@@ -75,8 +95,10 @@ class APIController extends Controller
                 $this->only = array_flip(array_diff(['data', 'meta'], $only));
             }
         }
+    }
 
-        // set output format
+    protected function configureOutputFormat()
+    {
         $this->format = config('transfugio.http.format');
     }
 
