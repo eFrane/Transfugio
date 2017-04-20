@@ -86,7 +86,7 @@ trait IndexPaginatedTrait
      * @throws QueryException on unresolvable queries
      * @return boolean resolve success
      **/
-    protected function resolveQuery(array $toResolve, QueryService $query)
+    public function resolveQuery(array $toResolve, QueryService $query)
     {
         foreach ($toResolve as $field => $valueExpression) {
             $method = sprintf("query%s", ucfirst(camel_case($field)));

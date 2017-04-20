@@ -78,7 +78,7 @@ class QueryService
      * @param \Closure $queryResolver
      * @return QueryService
      **/
-    public function run(\Closure $queryResolver)
+    public function run(callable $queryResolver)
     {
         $this->prepare($queryResolver);
         $this->paginate();
@@ -108,7 +108,7 @@ class QueryService
      * @see getUnresolvedParameters
      * @param \Closure $queryResolver
      */
-    public function prepare(\Closure $queryResolver)
+    public function prepare(callable $queryResolver)
     {
         // add custom conditions to unresolved
         $this->unresolved = $this->unresolved
