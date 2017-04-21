@@ -50,19 +50,36 @@ class APIController extends Controller
     protected function validateModel()
     {
         if (!is_string($this->model)) {
-            $controllerName = get_called_class();
-            $controllerNameComponents = explode('\\', $controllerName);
+            $baseName = $this->getControllerBaseName();
+            $this->findModelClass($baseName);
+        }
+    }
 
-            $baseName = array_pop($controllerNameComponents);
-            $baseName = substr($baseName, 0, strrpos($baseName, 'Controller'));
+    /**
+     * @return string
+     */
+    protected function getControllerBaseName()
+    {
+        $controllerName = get_called_class();
+        $controllerNameComponents = explode('\\', $controllerName);
 
-            if (strlen($baseName) > 0) {
-                $modelClass = sprintf('%s%s', config('transfugio.modelNamespace'), $baseName);
-                if (class_exists($modelClass)) {
-                    $this->model = $modelClass;
-                } else {
-                    throw new \LogicException("API controllers must have a valid \$model property.");
-                }
+        $baseName = array_pop($controllerNameComponents);
+        $baseName = substr($baseName, 0, strrpos($baseName, 'Controller'));
+
+        return $baseName;
+    }
+
+    /**
+     * @param $baseName
+     */
+    protected function findModelClass($baseName)
+    {
+        if (strlen($baseName) > 0) {
+            $modelClass = sprintf('%s%s', config('transfugio.modelNamespace'), $baseName);
+            if (class_exists($modelClass)) {
+                $this->model = $modelClass;
+            } else {
+                throw new \LogicException("API controllers must have a valid \$model property.");
             }
         }
     }
@@ -105,16 +122,26 @@ class APIController extends Controller
     public function __call($method, $parameters)
     {
         if (starts_with($method, 'respond')) {
-            $responseBuilder = new ResponseBuilder($this->format, [
-                'only'      => $this->only,
-                'modelName' => $this->getModelName(),
-                'includes'  => ($this->request->has('includes')) ? $this->request->get('includes') : [],
-            ]);
-
-            return call_user_func_array([$responseBuilder, $method], $parameters);
+            return $this->buildResponse($method, $parameters);
         }
 
         return parent::__call($method, $parameters);
+    }
+
+    /**
+     * @param $method
+     * @param $parameters
+     * @return mixed
+     */
+    protected function buildResponse($method, $parameters)
+    {
+        $responseBuilder = new ResponseBuilder($this->format, [
+            'only'      => $this->only,
+            'modelName' => $this->getModelName(),
+            'includes'  => ($this->request->has('includes')) ? $this->request->get('includes') : [],
+        ]);
+
+        return call_user_func_array([$responseBuilder, $method], $parameters);
     }
 
     public function getModelName()
