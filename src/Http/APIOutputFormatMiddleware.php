@@ -17,18 +17,11 @@ class APIOutputFormatMiddleware
             return 'json_accept';
         }
 
-        switch ($request->input('format')) {
-            case 'json':
-                return 'json';
-            case 'xml':
-                return 'xml';
-            case 'yaml':
-                return 'yaml';
-            case 'html':
-                return 'html';
-
-            default:
-                return 'json_accept';
+        $requestFormat = $request->input('format');
+        if (in_array($requestFormat, ['json', 'xml', 'yaml', 'html'])) {
+            return $requestFormat;
         }
+
+        return 'json_accept';
     }
 }
