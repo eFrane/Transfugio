@@ -112,7 +112,11 @@ class QueryService
     {
         // add custom conditions to unresolved
         $this->unresolved = $this->unresolved
-            ->merge(collect($this->parameters)->except(self::getDefaultQueryParameters()));
+                ->merge(collect($this->parameters)
+                ->except(self::getDefaultQueryParameters()))
+                ->map(function ($parameter) {
+                    return new ValueExpression($parameter);
+                });
 
         // parse where conditions
         if (array_has($this->parameters, 'where') && !is_null($this->parameters['where'])) {
