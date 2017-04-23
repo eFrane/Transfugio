@@ -2,6 +2,7 @@
 
 use EFrane\Transfugio\Query\QueryException;
 use EFrane\Transfugio\Query\QueryService;
+use EFrane\Transfugio\Query\ValueExpression;
 use Illuminate\Http\Request;
 
 /**
@@ -89,6 +90,10 @@ trait IndexPaginatedTrait
     public function resolveQuery(array $toResolve, QueryService $query)
     {
         foreach ($toResolve as $field => $valueExpression) {
+            if (!is_a($valueExpression, ValueExpression::class)) {
+                throw QueryException::queryParseErrorException();
+            }
+
             $method = sprintf("query%s", ucfirst(camel_case($field)));
 
             if (!method_exists($this, $method)) {

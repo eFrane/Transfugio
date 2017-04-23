@@ -11,4 +11,9 @@ class QueryException extends \RuntimeException
     {
         return new self("Query was not resolved successfully.");
     }
+
+    public static function queryParseErrorException()
+    {
+        return new self("Query failed to evaluate into a ValueExpression");
+    }
 }
