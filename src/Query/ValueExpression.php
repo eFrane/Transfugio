@@ -118,7 +118,7 @@ class ValueExpression
             preg_match($pattern, $value, $matches);
 
             if (count($matches) > 0) {
-                // TODO: create date from match
+                $date = Carbon::parse($value);
             }
         }
 
