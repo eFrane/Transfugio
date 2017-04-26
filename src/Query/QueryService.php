@@ -2,6 +2,13 @@
 
 use Carbon\Carbon;
 
+/**
+ * Class QueryService
+ *
+ * @package EFrane\Transfugio\Query
+ * @see \Illuminate\Database\Query\Builder
+ * @method where($field, $operator, $value)
+ */
 class QueryService
 {
     /**

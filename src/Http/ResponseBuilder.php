@@ -39,6 +39,12 @@ class ResponseBuilder
         return $this->respond($data, $status, true);
     }
 
+    /**
+     * @param Collection $data
+     * @param int $status
+     * @param bool $processed
+     * @return Response
+     */
     public function respond(Collection $data, $status = 200, $processed = false)
     {
         try {

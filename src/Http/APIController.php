@@ -1,6 +1,7 @@
 <?php namespace EFrane\Transfugio\Http;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
 /**
@@ -34,19 +35,32 @@ class APIController extends Controller
      */
     public function __construct(Request $request)
     {
-        $this->checkForValidImplementingClass($request);
-        $this->configureOutputLimit($request);
+        $this->request = $request;
+
+        $this->checkForValidImplementingClass();
+
+        $this->configureOutputLimit();
         $this->configureOutputFormat();
     }
 
-    protected function checkForValidImplementingClass(Request $request)
+    /**
+     * Check wether the model class exists and, when given, if the
+     * item id is a valid id.
+     *
+     * @throws APIControllerException
+     */
+    protected function checkForValidImplementingClass()
     {
         $this->validateModel();
         $this->validateItemId();
-
-        $this->request = $request;
     }
 
+    /**
+     * Validate the existence of the controller's corresponding model
+     * or determine the model based on the controller's name.
+     *
+     * @throws APIControllerException
+     */
     protected function validateModel()
     {
         if (!is_string($this->model)) {
@@ -56,6 +70,8 @@ class APIController extends Controller
     }
 
     /**
+     * Determine the Controller's base name
+     *
      * @return string
      */
     protected function getControllerBaseName()
@@ -71,6 +87,7 @@ class APIController extends Controller
 
     /**
      * @param $baseName
+     * @throws APIControllerException
      */
     protected function findModelClass($baseName)
     {
@@ -79,27 +96,30 @@ class APIController extends Controller
             if (class_exists($modelClass)) {
                 $this->model = $modelClass;
             } else {
-                throw new \LogicException("API controllers must have a valid \$model property.");
+                throw APIControllerException::invalidModelPropertyException();
             }
         }
     }
 
+    /**
+     * @throws APIControllerException
+     */
     protected function validateItemId()
     {
         if (((property_exists($this, 'item_id') && $this->item_id !== 0)
                 || !property_exists($this, 'item_id')) && !class_exists($this->model)
         ) {
-            throw new \LogicException("The requested model {$this->model} is invalid.");
+            throw APIControllerException::invalidItemIdPropertyException();
         }
     }
 
     /**
-     * @param Request $request
+     * Limit what's returned
      */
-    protected function configureOutputLimit(Request $request)
+    protected function configureOutputLimit()
     {
-        if ($request->input('only')) {
-            $only = explode(',', $request->input('only'));
+        if ($this->request->input('only')) {
+            $only = explode(',', $this->request->input('only'));
 
             $validator = app('validator')->make(
                 ['only' => $only],
@@ -114,11 +134,29 @@ class APIController extends Controller
         }
     }
 
+    /**
+     * Configure the output format
+     */
     protected function configureOutputFormat()
     {
+        $requestFormat = $this->request->input('format');
+
         $this->format = config('transfugio.http.format');
+
+        if ($this->request->wantsJson()) {
+            $this->format = 'json_accept';
+        }
+
+        if (in_array($requestFormat, ['json', 'xml', 'yaml', 'html'])) {
+            $this->format = $requestFormat;
+        }
     }
 
+    /**
+     * @param string $method
+     * @param array $parameters
+     * @return Response|mixed
+     */
     public function __call($method, $parameters)
     {
         if (starts_with($method, 'respond')) {
@@ -131,7 +169,7 @@ class APIController extends Controller
     /**
      * @param $method
      * @param $parameters
-     * @return mixed
+     * @return Response
      */
     protected function buildResponse($method, $parameters)
     {
