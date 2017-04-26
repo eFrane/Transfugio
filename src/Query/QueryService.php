@@ -119,11 +119,13 @@ class QueryService
     {
         // add custom conditions to unresolved
         $this->unresolved = $this->unresolved
-                ->merge(collect($this->parameters)
-                ->except(self::getDefaultQueryParameters()))
-                ->map(function ($parameter) {
-                    return new ValueExpression($parameter);
-                });
+            ->merge(collect($this->parameters)->except(self::getDefaultQueryParameters()))
+            ->filter(function ($parameter) {
+                return !is_null($parameter);
+            })
+            ->map(function ($parameter) {
+                return new ValueExpression($parameter);
+            });
 
         // parse where conditions
         if (array_has($this->parameters, 'where') && !is_null($this->parameters['where'])) {
@@ -142,6 +144,11 @@ class QueryService
                 throw QueryException::unsuccesfulQueryException();
             }
         }
+    }
+
+    public static function getDefaultQueryParameters()
+    {
+        return self::$defaultQueryParameters;
     }
 
     /**
@@ -324,10 +331,5 @@ class QueryService
     public function getQuery()
     {
         return $this->query;
-    }
-
-    public static function getDefaultQueryParameters()
-    {
-        return self::$defaultQueryParameters;
     }
 }
