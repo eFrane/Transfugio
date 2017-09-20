@@ -32,7 +32,7 @@ class JSONSchemaLoader implements Loader
 
             // TODO: other field data (specific references, ...)
 
-            $field = new DefaultFieldDocumentor($fieldName, $description, $cardinality, $status);
+            $field = new DefaultFieldDocumentor($fieldName, $description, $cardinality, $status, $options['type']);
 
             if (isset($options['format'])) {
                 $field->setFormat($options['format']);

@@ -21,13 +21,15 @@ class DefaultFieldDocumentor extends FieldDocumentor
    * @param string $description
    * @param int $cardinality
    * @param int $status
+   * @param string $type
    */
-  public function __construct($name, $description, $cardinality, $status)
+  public function __construct($name, $description, $cardinality, $status, $type)
   {
     $this->name = $name;
     $this->description = $description;
     $this->cardinality = $cardinality;
     $this->status = $status;
+    $this->type = $type;
   }
 
   /**
