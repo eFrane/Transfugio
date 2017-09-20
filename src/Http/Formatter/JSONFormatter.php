@@ -13,7 +13,7 @@ class JSONFormatter implements Formatter
   {
     return json_encode(
       $collection->toArray(),
-      JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
+      JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
     );
   }
 }
