@@ -66,24 +66,7 @@ class ResponseBuilder
                 $headers['Access-Control-Allow-Origin'] = '*';
             }
 
-            if ($this->options['format'] === 'html') {
-                $response = new WebView($data, $status);
-
-                $response->setModelName($this->options['modelName']);
-
-                if (isset($this->options['paginationCode'])
-                    && strlen($this->options['paginationCode']) > 0
-                ) {
-                    $response->setIsCollection = true;
-                    $response->setPaginationCode($this->options['paginationCode']);
-                }
-
-                $response->setIsError(400 <= $status && $status <= 599);
-
-                $response->render();
-            } else {
-                $response = new Response($data, $status);
-            }
+            $response = new Response($data, $status);
 
             foreach ($headers as $name => $value) {
                 $response->header($name, $value);
@@ -152,10 +135,6 @@ class ResponseBuilder
      */
     public function respondWithEmpty($message = "The requested result set is empty.", $status = 204)
     {
-        if ($this->options['format'] === 'html') {
-            $status = 200;
-        }
-
         return $this->respondWithError($message, $status);
     }
 

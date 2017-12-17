@@ -24,16 +24,8 @@
         'enableCORS' => true,
     ],
 
-    'web' => [
-        'documentationEnabled' => false, // Toggle the auto-documentation feature
-
-        'documentationType' => 'JSONSchema',
-        'documentationRoot' => '',
-    ],
-
     'enabledFormatters' => [
-        // enable or disable output formatters (?format=<format>)
-        'html' => true,
+        // enable or disable output formatters (?format=$format)
         'json' => true,
         'yaml' => true,
         'xml'  => false,

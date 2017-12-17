@@ -32,8 +32,6 @@ class FormatterFactory
                 return new JSONFormatter();
             case 'yaml':
                 return new YAMLFormatter();
-            case 'html':
-                return new HTMLFormatter();
 
             default:
                 throw FormatterException::formatUnknownException($format);
