@@ -1,4 +1,4 @@
-**THIS PROJECT HAS BEEN ABANDONED.!**
+**THIS PROJECT HAS BEEN ABANDONED!**
 
 If you need a simple API layer for your Laravel application, check out [Resource controllers](https://laravel.com/docs/8.x/eloquent-resources).
 
